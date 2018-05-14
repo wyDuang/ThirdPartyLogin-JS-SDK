@@ -4,11 +4,11 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Google Login</title>
+    <title>Facebook Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="google-signin-scope" content="profile email">
     <meta name="google-signin-client_id" content="123456789999999-8v8888888888lvnpdddmtt7a.apps.googleusercontent.com">
-    <script src="https://apis.google.com/js/api:client.js"></script>
+    
     <style type="text/css">
         a {
             text-decoration: none;
@@ -20,7 +20,7 @@
         }
 
         #googleLogin {
-            background: url(images/login_google.png) no-repeat 0 center;
+            background: url(images/login_facebook.png) no-repeat 0 center;
             width: 35px;
             height: 35px;
             float: left;
@@ -34,34 +34,10 @@
     <!--Google登录-->
     <div class="g-signin2" data-onsuccess="onSignIn"></div>
     <br />
-    <script>
-        function onSignIn(googleUser) {
-            // Useful data for your client-side scripts:
-            var profile = googleUser.getBasicProfile();
-            console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-            console.log('Full Name: ' + profile.getName());
-            console.log('Given Name: ' + profile.getGivenName());
-            console.log('Family Name: ' + profile.getFamilyName());
-            console.log("Image URL: " + profile.getImageUrl());
-            console.log("Email: " + profile.getEmail());
-
-            // The ID token you need to pass to your backend:
-            var id_token = googleUser.getAuthResponse().id_token;
-            console.log("ID Token: " + id_token);
-        };
-    </script>
 
     <!--Google注销-->
     <a href="#" onclick="signOut();">Sign out</a>
     <br />
-    <script>
-        function signOut() {
-            var auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(function () {
-                console.log('User signed out.');
-            });
-        }
-    </script>
 
     <!--自定义Google登录-->
     <div class="oauth">
@@ -69,39 +45,62 @@
     </div>
     <br />
     <p>把client_id配置上按钮才会生效</p>
-    <script>
-        var googleUser = {};
-        var startApp = function () {
-            gapi.load('auth2', function () {
-                auth2 = gapi.auth2.init({
-                    client_id: '123456789999999-8v8888888888lvnpdddmtt7a.apps.googleusercontent.com',
-                    cookiepolicy: 'single_host_origin',
-                    scope: 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email'
-                });
-                attachSignin(document.getElementById('googleLogin'));
-            });
-        };
-
-        function attachSignin(element) {
-            auth2.attachClickHandler(element, {},
-                function (googleUser) {
-                    var profile = auth2.currentUser.get().getBasicProfile();
-                    console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-                    console.log('Full Name: ' + profile.getName());
-                    console.log('Given Name: ' + profile.getGivenName());
-                    console.log('Family Name: ' + profile.getFamilyName());
-                    console.log("Image URL: " + profile.getImageUrl());
-                    console.log("Email: " + profile.getEmail());
-                    var id_token = googleUser.getAuthResponse().id_token;
-                    console.log("ID Token: " + id_token);
-                },
-                function (error) {
-                    console.log(JSON.stringify(error, undefined, 2));
-                }
-            );
-        }
-        startApp();
-    </script>
 </body>
+<script src="https://apis.google.com/js/api:client.js" async="async"></script>
+<script>
+	function onSignIn(googleUser) {
+		// Useful data for your client-side scripts:
+		var profile = googleUser.getBasicProfile();
+		console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+		console.log('Full Name: ' + profile.getName());
+		console.log('Given Name: ' + profile.getGivenName());
+		console.log('Family Name: ' + profile.getFamilyName());
+		console.log("Image URL: " + profile.getImageUrl());
+		console.log("Email: " + profile.getEmail());
 
+		// The ID token you need to pass to your backend:
+		var id_token = googleUser.getAuthResponse().id_token;
+		console.log("ID Token: " + id_token);
+	};
+	
+	function signOut() {
+		var auth2 = gapi.auth2.getAuthInstance();
+		auth2.signOut().then(function () {
+			console.log('User signed out.');
+		});
+	}
+</script>
+<script>
+	var googleUser = {};
+	var startApp = function () {
+		gapi.load('auth2', function () {
+			auth2 = gapi.auth2.init({
+				client_id: '123456789999999-8v8888888888lvnpdddmtt7a.apps.googleusercontent.com',
+				cookiepolicy: 'single_host_origin',
+				scope: 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email'
+			});
+			attachSignin(document.getElementById('googleLogin'));
+		});
+	};
+
+	function attachSignin(element) {
+		auth2.attachClickHandler(element, {},
+			function (googleUser) {
+				var profile = auth2.currentUser.get().getBasicProfile();
+				console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+				console.log('Full Name: ' + profile.getName());
+				console.log('Given Name: ' + profile.getGivenName());
+				console.log('Family Name: ' + profile.getFamilyName());
+				console.log("Image URL: " + profile.getImageUrl());
+				console.log("Email: " + profile.getEmail());
+				var id_token = googleUser.getAuthResponse().id_token;
+				console.log("ID Token: " + id_token);
+			},
+			function (error) {
+				console.log(JSON.stringify(error, undefined, 2));
+			}
+		);
+	}
+	startApp();
+</script>
 </html>

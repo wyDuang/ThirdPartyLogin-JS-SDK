@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Facebook Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        a {
+            text-decoration: none;
+        }
+
+        .oauth {
+            width: 200px;
+            height: 35px;
+        }
+
+        #facebookLogin {
+            background: url(images/login_facebook.png) no-repeat 0 center;
+            width: 35px;
+            height: 35px;
+            float: left;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="oauth">
+    <a id="facebookLogin" href="javascript:void(0);" onclick="checkLoginState();">&nbsp;</a>
+</div>
+<script type="text/javascript">    
+    //////facebook登陆
+window.fbAsyncInit = function () {
+    FB.init({
+        appId: '1234586859772805',
+        cookie: true,
+        xfbml: true,
+        version: 'v3.0'
+    });
+
+    FB.AppEvents.logPageView();
+};
+
+function statusChangeCallback(response) {
+    if (response.status === 'connected') {
+        //已登录
+        testAPI();
+    } else {
+        FB.login(function (response) {
+            if (response.status != 'not_authorized' && response.status != 'unknown') {
+                //除了“关闭登录框”，“取消登录”，继续判别执行
+                statusChangeCallback(response);
+            }
+        }, { scope:'email'});
+    }
+}
+
+function checkLoginState() {
+    FB.getLoginStatus(function (response) {
+        statusChangeCallback(response);
+    });
+}
+
+(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) { return; }
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+function testAPI() {
+    FB.api('/me?fields=id,name,email', function(response) {
+        var identifier = response.id;
+        var userEmail = response.email;
+        var identityAccountType = 0;
+        if (identifier != null) {
+        	//ajaxLoginOAuth();
+        } else {
+        	location.href = '/account/login';
+        }
+        
+    });
+}
+
+///注销facebook
+function signOut2() {
+    FB.logout(function (response) { });
+}
+</script>
+</body>
+</html>

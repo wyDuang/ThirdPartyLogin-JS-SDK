@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Linkedin Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        a {
+            text-decoration: none;
+        }
+
+        .oauth {
+            width: 200px;
+            height: 35px;
+        }
+
+        #linkedinLogin {
+            background: url(images/login_linkedin.png) no-repeat 0 center;
+            width: 35px;
+            height: 35px;
+            float: left;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="oauth">
+        <a id="linkedinLogin" href="javascript:void(0);" onclick="linkedinClick();">&nbsp;</a>
+    </div>
+
+    <script type="text/javascript" src="https://platform.linkedin.com/in.js">
+        api_key: 99cm4gq0bg1iar
+        authorize: true
+        onLoad: onLinkedInLoad
+        lang: en_US
+    </script>
+    <script type="text/javascript">
+        //////linkedin登陆
+        //默认方法验证linkedin
+        function onLinkedInLoad() {
+            var isOk = IN.User.isAuthorized();
+            if (isOk) {
+                //console.log(isOk);
+                IN.Event.on(IN, "auth", function () { });
+            } else {
+                //console.log(isOk);
+                IN.Event.on(IN, "auth", getProfileData);
+            }
+        }
+        
+        //登录成功
+        function onSuccess(date) {
+            //console.dir(date);
+            //用户授权登录后在此数据处理
+            var identifier = date.id;
+            var identityName = date.firstName + date.lastName;
+            var userEmail = date.emailAddress;
+            var identityAccountType = 0;
+            if (identifier != null) {
+                //ajaxLoginOAuth();
+            } else {
+                location.href = '/account/login';
+            }
+        }
+        
+        //处理API调用的错误响应
+        function onError(error) {
+            console.log(error);
+        }
+        
+        ////使用API​​调用包装来请求成员的基本概要文件数据
+        function getProfileData() {
+            IN.API.Raw("/people/~").result(onSuccess).error(onError);
+        }
+        
+        //注销linkedin
+        function lingOut() {
+            IN.User.logout(out);
+        }
+        function out(data) {
+            console.log(data);
+        }
+        
+        //点击按钮登录linkedin
+        function linkedinClick() {
+            IN.User.authorize(lingLogin(), { 'r_emailaddress': 'email-address' });
+        }
+        function lingLogin(data) {
+            IN.API.Raw("/people/~:(id,firstName,lastName,email-address)?format=json").result(onSuccess).error(onError);
+        }
+    </script>
+</body>
+</html>
